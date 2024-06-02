@@ -21,7 +21,7 @@ public class PIXELSORT {
             for (int y = 0; y < img.getHeight(); y++) { // "width pointer"
                 tempArray.add(new Color(img.getRGB(x, y)));
             }
-            Collections.sort(tempArray, (o1, o2) -> o1.getRGB() - o2.getRGB()); // BZZZZZTT
+            Collections.sort(tempArray, (o1, o2) -> singleValue(o1.getRGB()) - singleValue(o2.getRGB())); // BZZZZZTT
             pixelArray.add(tempArray);
         }
         BufferedImage sortedImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -41,6 +41,13 @@ public class PIXELSORT {
             System.out.println(e);
         }
         return img;
+    }
+
+    private int singleValue(int rgbValue) {
+        int r = (rgbValue >> 16) & 0xff;
+        int g = (rgbValue >> 8) & 0xff; // getting the rgb values
+        int b = rgbValue & 0xff;
+        return ((r * 299 + g * 587 + b * 114) / 1000);
     }
 
     public static void main(String args[]) {
