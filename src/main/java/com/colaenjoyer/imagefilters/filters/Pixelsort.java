@@ -1,32 +1,34 @@
+package com.colaenjoyer.imagefilters.filters;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Random;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
-public class PIXELSORT {
+import com.colaenjoyer.imagefilters.filters.Pixelsort;
+
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+public class Pixelsort implements ImageFilter {
     private int bufferedImageWidth;
     private int bufferedImageHeight;
     private String progressString;
 
-    private PIXELSORT() {}
+    private Random random = new Random();
 
-    void sortPixels(String pathname, String maskPath) throws IOException {
-        String outName = pathname.substring(pathname.lastIndexOf("/") + 1, pathname.lastIndexOf("."));
-
+    public BufferedImage execute(String pathname, String maskPath) {
         BufferedImage imageToSort = getInputImage(pathname);
 
         bufferedImageWidth = imageToSort.getWidth();
         bufferedImageHeight = imageToSort.getHeight();
 
         Color[][] imgArray = extractImg(imageToSort);
-
-        updateProgressString(20);
 
         BufferedImage imageMask;
         boolean[][] mask = null;
@@ -36,17 +38,14 @@ public class PIXELSORT {
             mask = extractMask(imageMask);
         }
 
-        updateProgressString(40);
-
         Color[][] sortedPixels = sort(imageToSort);
 
-        updateProgressString(90);
+        addRandomColumnShifts(sortedPixels, 50);
 
-        ImageIO.write(applyMask(imgArray, sortedPixels, mask), "png", new File("./sorted_" + outName + ".png"));
-        updateProgressString(100);
+        return applyMask(imgArray, sortedPixels, mask);
     }
 
-    private BufferedImage getInputImage(String pathname) throws FileNotFoundException {
+    private BufferedImage getInputImage(String pathname) {
         BufferedImage img = null;
 
         try {
@@ -115,6 +114,25 @@ public class PIXELSORT {
         return sortedImgArray;
     }
 
+    private void addRandomColumnShifts(Color[][] colorArray, int maxShift) {
+        Color previous;
+        Color temp;
+
+        for(int x = 0; x < bufferedImageWidth; x++) {
+            int n = random.nextInt(maxShift);
+
+            for(int i = 0; i < n; i++) {
+                previous = colorArray[x][bufferedImageHeight-1];
+
+                for(int y = 0; y < bufferedImageHeight; y++) {
+                    temp = colorArray[x][y];
+                    colorArray[x][y] = previous;
+                    previous = temp;
+                }
+            }
+        }
+    }
+
     private BufferedImage applyMask(Color[][] img, Color[][] sortedImgArray, boolean[][] mask) {
         BufferedImage sortedImage = new BufferedImage(bufferedImageWidth, bufferedImageHeight, BufferedImage.TYPE_INT_RGB);
 
@@ -171,7 +189,7 @@ public class PIXELSORT {
     }
 
     public static void main(String args[]) {
-        PIXELSORT pixelsort = new PIXELSORT();
+        Pixelsort pixelsort = new Pixelsort();
 
         String imagePath = null;
         String maskPath = null;
@@ -186,7 +204,7 @@ public class PIXELSORT {
         }
 
         try {
-            pixelsort.sortPixels(imagePath, maskPath);
+            pixelsort.execute(imagePath, maskPath);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

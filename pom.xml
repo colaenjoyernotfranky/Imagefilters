@@ -1,0 +1,14 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.34</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+  <groupId>com.colaenjoyer.imagefilters</groupId>
+  <artifactId>imagefilters</artifactId>
+  <version>1</version>
+</project>
