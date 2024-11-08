@@ -3,9 +3,11 @@ package com.colaenjoyer.imagefilters.utils;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
+import com.colaenjoyer.imagefilters.configuration.AppConfiguration;
 import com.colaenjoyer.imagefilters.filters.Asciifilter;
 import com.colaenjoyer.imagefilters.filters.ImageFilter;
 import com.colaenjoyer.imagefilters.filters.Pixelsort;
@@ -73,20 +75,26 @@ public class ConsoleUtils {
     public static void saveResultImage(BufferedImage resultImage, String imagePath, ImageFilter selectedImageFilter) {
         String outName = null;
         if(getOperatingSystem().toLowerCase().contains("windows")) {
-            outName = imagePath.substring(imagePath.lastIndexOf("\\") + 1, imagePath.lastIndexOf("."));
+            outName = AppConfiguration.getOutputPath() + "\\" + imagePath.substring(imagePath.lastIndexOf("\\") + 1, imagePath.lastIndexOf("."));
         }
         if(getOperatingSystem().toLowerCase().contains("linux")) {
-            outName = imagePath.substring(imagePath.lastIndexOf("/") + 1, imagePath.lastIndexOf("."));
+            outName = AppConfiguration.getOutputPath() + "/" + imagePath.substring(imagePath.lastIndexOf("/") + 1, imagePath.lastIndexOf("."));
         }
         try {
             if(selectedImageFilter.getClass() == Asciifilter.class) {
-                ImageIO.write(resultImage, "png", new File("./ascii_" + outName + ".png"));
+                ImageIO.write(resultImage, "png", new File(outName + "_ascii.png"));
+                clearScreen();
+                log.info("Saved ascii image to " + outName + "_ascii.png");
             }
             if(selectedImageFilter.getClass() == Pixelsort.class) {
-                ImageIO.write(resultImage, "png", new File("./sorted_" + outName + ".png"));
+                ImageIO.write(resultImage, "png", new File(outName + "_sorted.png"));
+                clearScreen();
+                log.info("Saved sorted image to " + outName + "_sorted.png");
             }
+            TimeUnit.SECONDS.sleep(1);
         } catch (Exception e) {
             log.severe(e.getMessage());
+            Thread.currentThread().interrupt();
         }
     }
 
