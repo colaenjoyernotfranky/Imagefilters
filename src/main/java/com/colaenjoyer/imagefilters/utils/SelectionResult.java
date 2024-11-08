@@ -5,4 +5,4 @@ import com.colaenjoyer.imagefilters.filters.ImageFilter;
 import lombok.Builder;
 
 @Builder
-public record SelectionResult(String titleChoice, boolean quit, ImageFilter imageFilter) {}
+public record SelectionResult(boolean quit, ImageFilter imageFilter) {}

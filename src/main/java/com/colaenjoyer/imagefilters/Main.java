@@ -1,12 +1,16 @@
 package com.colaenjoyer.imagefilters;
 
 import java.awt.image.BufferedImage;
+import java.util.Collections;
 
 import com.colaenjoyer.imagefilters.filters.ImageFilter;
+import com.colaenjoyer.imagefilters.ui.MenuRenderer;
 import com.colaenjoyer.imagefilters.utils.ConsoleUtils;
 import com.colaenjoyer.imagefilters.utils.InputImagePaths;
 import com.colaenjoyer.imagefilters.utils.SelectionResult;
 import lombok.extern.java.Log;
+
+import static com.colaenjoyer.imagefilters.utils.UiUtils.*;
 
 @Log
 public class Main {
@@ -15,6 +19,11 @@ public class Main {
         BufferedImage filterResult;
         boolean quit;
         while(true) {
+            ConsoleUtils.clearScreen();
+
+            MenuRenderer menuRenderer = MenuRenderer.builder().menus(Collections.singletonList(getSelectionMenu())).build();
+            menuRenderer.selectMenu("main menu");
+
             char selection = ConsoleUtils.selectionMenu();
 
             SelectionResult selectionResult = ConsoleUtils.executeSelection(selection);
@@ -25,7 +34,7 @@ public class Main {
                 break;
             }
 
-            InputImagePaths inputImagePaths = ConsoleUtils.getImagePaths(selectionResult.titleChoice());
+            InputImagePaths inputImagePaths = ConsoleUtils.getImagePaths();
 
             if(selectedImageFilter != null) {
                 filterResult = selectedImageFilter.execute(inputImagePaths.imagePath(), inputImagePaths.maskPath());

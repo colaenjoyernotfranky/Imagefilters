@@ -2,7 +2,7 @@ package com.colaenjoyer.imagefilters.utils;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
@@ -18,21 +18,22 @@ public class ConsoleUtils {
     private ConsoleUtils() {}
 
     private static final Scanner in = new Scanner(System.in);
-    private static void clearScreen() {
+    public static void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
+    }
+
+    private static void removeChars(int amount) {
+        for(int i = 0; i <= amount; i++) {
+            System.out.print("\b");
+        }
     }
 
     public static char selectionMenu() {
         boolean validSelection = false;
         char selection = 0;
         while (!validSelection) {
-            clearScreen();
-            String title =    "-------------[imagefilters]-------------";
-            String subtitle = "[a] ASCIIFILTER  [p] PIXELSORT  [q] Exit";
-            String footer =   "----------------------------------------";
-
-            System.out.print(title + "\n" + subtitle + "\n" + footer + "\nSelection: ");
+            System.out.print("\nSelection: ");
             selection = in.next().charAt(0);
             if(selection == 'q' || selection == 'a' || selection == 'p') {
                 validSelection = true;
@@ -42,33 +43,26 @@ public class ConsoleUtils {
     }
 
     public static SelectionResult executeSelection(char selection) {
-        clearScreen();
         SelectionResult result;
         switch (selection) {
-            case 'a' -> result = new SelectionResult("-------------[ASCIIFILTER]-------------", false, new Asciifilter());
-            case 'p' -> result = new SelectionResult("--------------[PIXELSORT]--------------", false, new Pixelsort());
-            case 'q' -> result = new SelectionResult(null, true, null);
-            default -> result = new SelectionResult(null, false, null);
+            case 'a' -> result = new SelectionResult(false, new Asciifilter());
+            case 'p' -> result = new SelectionResult(false, new Pixelsort());
+            case 'q' -> result = new SelectionResult(true, null);
+            default -> result = new SelectionResult(false, null);
         }
         return result;
     }
 
-    public static InputImagePaths getImagePaths(String titleChoice) {
-        String subtitle = "Image path: ";
-        System.out.print(titleChoice + "\n" + subtitle);
-
+    public static InputImagePaths getImagePaths() {
+        System.out.print("\nImage path: ");
         String imagePath = in.next().replace("\"", "");
 
-        ConsoleUtils.clearScreen();
-
-        subtitle = "Image path: " + imagePath + "\nMask path: ";
-        System.out.print(titleChoice + "\n" + subtitle);
-
+        System.out.print("Mask path: ");
         String maskPath = in.next().replace("\"", "");
+
         if(maskPath.isEmpty()) {
             maskPath = null;
         }
-        ConsoleUtils.clearScreen();
         return new InputImagePaths(imagePath, maskPath);
     }
 
