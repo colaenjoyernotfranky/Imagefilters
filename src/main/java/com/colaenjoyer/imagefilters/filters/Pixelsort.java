@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
+import com.colaenjoyer.imagefilters.configuration.FilterConfiguration;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 
@@ -17,6 +18,8 @@ import lombok.extern.java.Log;
 public class Pixelsort implements ImageFilter {
     private int bufferedImageWidth;
     private int bufferedImageHeight;
+
+    private static final int MAX_PIXEL_SHIFT = FilterConfiguration.PixelsortConfiguration.getMaxPixelShift();
 
     private final Random random = new Random();
 
@@ -46,7 +49,7 @@ public class Pixelsort implements ImageFilter {
 
         Color[][] sortedPixels = sortPixels(imageToSort);
 
-        addRandomColumnShifts(sortedPixels, 50);
+        addRandomColumnShifts(sortedPixels);
 
         return applyMask(imageColorArray, sortedPixels, mask);
     }
@@ -120,12 +123,12 @@ public class Pixelsort implements ImageFilter {
         return sortedImageArray;
     }
 
-    private void addRandomColumnShifts(Color[][] colorArray, int maxShift) {
+    private void addRandomColumnShifts(Color[][] colorArray) {
         Color previousPixel;
         Color temp;
 
         for(int x = 0; x < bufferedImageWidth; x++) {
-            int n = random.nextInt(maxShift);
+            int n = random.nextInt(Pixelsort.MAX_PIXEL_SHIFT);
 
             for(int i = 0; i < n; i++) {
                 previousPixel = colorArray[x][bufferedImageHeight-1];
@@ -140,7 +143,8 @@ public class Pixelsort implements ImageFilter {
     }
 
     private BufferedImage applyMask(Color[][] imageArray, Color[][] sortedImageArray, boolean[][] mask) {
-        BufferedImage sortedImage = new BufferedImage(bufferedImageWidth, bufferedImageHeight, BufferedImage.TYPE_INT_RGB);
+        BufferedImage sortedImage = new BufferedImage(bufferedImageWidth, bufferedImageHeight,
+                BufferedImage.TYPE_INT_RGB);
         boolean useMask = mask != null;
         Color color;
 

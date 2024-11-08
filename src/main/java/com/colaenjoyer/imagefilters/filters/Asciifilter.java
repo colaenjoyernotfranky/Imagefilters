@@ -11,13 +11,15 @@ import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
+import com.colaenjoyer.imagefilters.configuration.FilterConfiguration;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 
 @Log
 @NoArgsConstructor
 public class Asciifilter implements ImageFilter {
-    private static final int FONT_SIZE = 8;
+    private static final int FONT_SIZE = FilterConfiguration.AsciiFilterConfiguration.getFontSize();
+    private static final int OFFSET = FilterConfiguration.AsciiFilterConfiguration.getBrightnessOffset();
 
     public BufferedImage execute(String pathname, String mask) {
         BufferedImage inputImage = getInputImage(pathname);
@@ -127,13 +129,13 @@ public class Asciifilter implements ImageFilter {
         StringBuilder s = new StringBuilder();
         for (int i = 0; i < img.getHeight(); i++) {
             for (int j = 0; j < img.getWidth(); j++) {
-                int imageBrightness = getPixelBrightness(img, j, i);
+                int imageBrightness = (getPixelBrightness(img, j, i) + Asciifilter.OFFSET);
 
                 if (imageBrightness <= 64) {
                     s.append(".");
-                } else if (64 < imageBrightness && imageBrightness < 129) {
+                } else if (imageBrightness <= 129) {
                     s.append("-");
-                } else if (129 < imageBrightness && imageBrightness < 193) {
+                } else if (imageBrightness <= 193) {
                     s.append("+");
                 } else {
                     s.append("*");
