@@ -11,7 +11,6 @@ import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
-import com.colaenjoyer.imagefilters.utils.ConsoleUtils;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
@@ -35,7 +34,7 @@ public class Asciifilter implements ImageFilter {
 
         BufferedImage scaledInputImage = scaleImage(inputImage, bufferedImageWidth * FONT_SIZE,
                 bufferedImageHeight * FONT_SIZE);
-        return applyMask(scaledInputImage, textAsImage(toAscii(inputImage, 0)), maskArray);
+        return applyMask(scaledInputImage, textAsImage(toAscii(inputImage)), maskArray);
     }
 
     private BufferedImage scaleImage(BufferedImage originalScaleImage, int newWidth, int newHeight) {
@@ -58,10 +57,10 @@ public class Asciifilter implements ImageFilter {
 
         resultImageGraphics.setColor(Color.WHITE);
 
-        Map<TextAttribute, Object> fontAttributes = new HashMap<TextAttribute, Object>();
+        Map<TextAttribute, Object> fontAttributes = new HashMap<>();
         fontAttributes.put(TextAttribute.TRACKING, 1);
 
-        resultImageGraphics.setFont(new Font("Serif", Font.PLAIN, FONT_SIZE).deriveFont(fontAttributes));
+        resultImageGraphics.setFont(new Font("Arial", Font.PLAIN, FONT_SIZE).deriveFont(fontAttributes));
 
         for(int y = 0; y < resultImage.getHeight()/FONT_SIZE; y++) {
             for (int x = 0; x < resultImage.getWidth()/FONT_SIZE; x++) {
@@ -117,22 +116,22 @@ public class Asciifilter implements ImageFilter {
         try {
             img = ImageIO.read(new File(pathname));
         } catch (IOException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
         return img;
     }
 
-    private String toAscii(BufferedImage img, int offset) {
+    private String toAscii(BufferedImage img) {
         StringBuilder s = new StringBuilder();
         for (int i = 0; i < img.getHeight(); i++) {
             for (int j = 0; j < img.getWidth(); j++) {
                 int image_brightness = getPixelBrightness(img, j, i);
 
-                if (image_brightness <= 64 + offset) {
+                if (image_brightness <= 64) {
                     s.append(".");
-                } else if (64 + offset < image_brightness && image_brightness < 129 + offset) {
+                } else if (64 < image_brightness && image_brightness < 129) {
                     s.append("-");
-                } else if (129 + offset < image_brightness && image_brightness < 193 + offset) {
+                } else if (129 < image_brightness && image_brightness < 193) {
                     s.append("+");
                 } else {
                     s.append("*");
