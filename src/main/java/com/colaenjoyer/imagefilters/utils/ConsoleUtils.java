@@ -8,22 +8,32 @@ import javax.imageio.ImageIO;
 
 import com.colaenjoyer.imagefilters.filters.Asciifilter;
 import com.colaenjoyer.imagefilters.filters.Pixelsort;
+import lombok.extern.java.Log;
 
+@Log
 public class ConsoleUtils {
-    private static Scanner in = new Scanner(System.in);
+    private final static Scanner in = new Scanner(System.in);
     private static void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
 
     public static char selectionMenu() {
-        clearScreen();
-        String title =    "-------------[imagefilters]-------------";
-        String subtitle = "[a] ASCIIFILTER  [p] PIXELSORT  [q] Exit";
-        String footer =   "----------------------------------------";
+        boolean validSelection = false;
+        char selection = 0;
+        while (!validSelection) {
+            clearScreen();
+            String title = "-------------[imagefilters]-------------";
+            String subtitle = "[a] ASCIIFILTER  [p] PIXELSORT  [q] Exit";
+            String footer = "----------------------------------------";
 
-        System.out.print(title + "\n" + subtitle + "\n" + footer + "\nSelection: ");
-        return in.next().toLowerCase().charAt(0);
+            System.out.print(title + "\n" + subtitle + "\n" + footer + "\nSelection: ");
+            selection = in.next().charAt(0);
+            if(selection == 'q' || selection == 'a' || selection == 'p') {
+                validSelection = true;
+            }
+        }
+        return selection;
     }
 
     public static SelectionResult executeSelection(char selection) {
@@ -57,11 +67,21 @@ public class ConsoleUtils {
     }
 
     public static void saveResultImage(BufferedImage resultImage, String imagePath) {
-        String outName = imagePath.substring(imagePath.lastIndexOf("\\") + 1, imagePath.lastIndexOf("."));
+        String outName = null;
+        if(getOperatingSystem().toLowerCase().contains("windows")) {
+            outName = imagePath.substring(imagePath.lastIndexOf("\\") + 1, imagePath.lastIndexOf("."));
+        }
+        if(getOperatingSystem().toLowerCase().contains("linux")) {
+            outName = imagePath.substring(imagePath.lastIndexOf("/") + 1, imagePath.lastIndexOf("."));
+        }
         try {
             ImageIO.write(resultImage, "png", new File("./filtered_" + outName + ".png"));
         } catch (Exception e) {
-            System.out.println(e);
+            log.severe(e.getMessage());
         }
+    }
+
+    public static String getOperatingSystem() {
+        return System.getProperty("os.name");
     }
 }
