@@ -11,7 +11,9 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
+@Log
 @NoArgsConstructor
 public class Pixelsort implements ImageFilter {
     private int bufferedImageWidth;
@@ -22,8 +24,12 @@ public class Pixelsort implements ImageFilter {
     public BufferedImage execute(String pathname, String maskPath) {
         BufferedImage imageToSort = getInputImage(pathname);
 
-        bufferedImageWidth = imageToSort.getWidth();
-        bufferedImageHeight = imageToSort.getHeight();
+        if(imageToSort != null) {
+            bufferedImageWidth = imageToSort.getWidth();
+            bufferedImageHeight = imageToSort.getHeight();
+        } else {
+            return null;
+        }
 
         Color[][] imgArray = extractImg(imageToSort);
 
@@ -32,7 +38,11 @@ public class Pixelsort implements ImageFilter {
 
         if(maskPath != null) {
             imageMask = getInputImage(maskPath);
-            mask = extractMask(imageMask);
+            if(imageMask != null) {
+                mask = extractMask(imageMask);
+            } else {
+                return null;
+            }
         }
 
         Color[][] sortedPixels = sort(imageToSort);
@@ -48,7 +58,7 @@ public class Pixelsort implements ImageFilter {
         try {
             img = ImageIO.read(new File(pathname));
         } catch (IOException e) {
-            System.out.println(e);
+            log.severe(e.getMessage());
         }
         return img;
     }
@@ -130,6 +140,7 @@ public class Pixelsort implements ImageFilter {
         }
     }
 
+    //TODO: Reduce complexity
     private BufferedImage applyMask(Color[][] imageArray, Color[][] sortedImageArray, boolean[][] mask) {
         BufferedImage sortedImage = new BufferedImage(bufferedImageWidth, bufferedImageHeight, BufferedImage.TYPE_INT_RGB);
 

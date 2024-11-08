@@ -12,10 +12,12 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
 @NoArgsConstructor
+@Log
 public class Asciifilter implements ImageFilter {
-    private final int FONT_SIZE = 8;
+    private static final int FONT_SIZE = 8;
 
     public BufferedImage execute(String pathname, String mask) {
         BufferedImage inputImage = getInputImage(pathname);
@@ -62,8 +64,8 @@ public class Asciifilter implements ImageFilter {
 
         resultImageGraphics.setFont(new Font("Arial", Font.PLAIN, FONT_SIZE).deriveFont(fontAttributes));
 
-        for(int y = 0; y < resultImage.getHeight()/FONT_SIZE; y++) {
-            for (int x = 0; x < resultImage.getWidth()/FONT_SIZE; x++) {
+        for(int y = 0; y < resultImage.getHeight()/ FONT_SIZE; y++) {
+            for (int x = 0; x < resultImage.getWidth()/ FONT_SIZE; x++) {
                 resultImageGraphics.drawString("" + textStringAsArray[y].charAt(x), x * FONT_SIZE, y * FONT_SIZE);
             }
         }
@@ -104,11 +106,11 @@ public class Asciifilter implements ImageFilter {
     }
 
     private int getPixelBrightness(BufferedImage img, int x, int y) {
-        int p = img.getRGB(x, y);
-        int image_r = (p >> 16) & 0xff;
-        int image_g = (p >> 8) & 0xff;
-        int image_b = p & 0xff;
-        return (image_b + image_g + image_r) / 3;
+        int pixel = img.getRGB(x, y);
+        int imageRed = (pixel >> 16) & 0xff;
+        int imageGreen = (pixel >> 8) & 0xff;
+        int imageBlue = pixel & 0xff;
+        return (imageBlue + imageGreen + imageRed) / 3;
     }
 
     private BufferedImage getInputImage(String pathname) {
@@ -116,7 +118,7 @@ public class Asciifilter implements ImageFilter {
         try {
             img = ImageIO.read(new File(pathname));
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            log.severe(e.getMessage());
         }
         return img;
     }
@@ -125,13 +127,13 @@ public class Asciifilter implements ImageFilter {
         StringBuilder s = new StringBuilder();
         for (int i = 0; i < img.getHeight(); i++) {
             for (int j = 0; j < img.getWidth(); j++) {
-                int image_brightness = getPixelBrightness(img, j, i);
+                int imageBrightness = getPixelBrightness(img, j, i);
 
-                if (image_brightness <= 64) {
+                if (imageBrightness <= 64) {
                     s.append(".");
-                } else if (64 < image_brightness && image_brightness < 129) {
+                } else if (64 < imageBrightness && imageBrightness < 129) {
                     s.append("-");
-                } else if (129 < image_brightness && image_brightness < 193) {
+                } else if (129 < imageBrightness && imageBrightness < 193) {
                     s.append("+");
                 } else {
                     s.append("*");

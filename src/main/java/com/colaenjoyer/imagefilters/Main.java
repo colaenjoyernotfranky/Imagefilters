@@ -6,7 +6,9 @@ import com.colaenjoyer.imagefilters.filters.ImageFilter;
 import com.colaenjoyer.imagefilters.utils.ConsoleUtils;
 import com.colaenjoyer.imagefilters.utils.InputImagePaths;
 import com.colaenjoyer.imagefilters.utils.SelectionResult;
+import lombok.extern.java.Log;
 
+@Log
 public class Main {
     public static void main(String[] args) {
         ImageFilter selectedImageFilter = null;
@@ -27,7 +29,11 @@ public class Main {
 
             if(selectedImageFilter != null) {
                 filterResult = selectedImageFilter.execute(inputImagePaths.imagePath(), inputImagePaths.maskPath());
-                ConsoleUtils.saveResultImage(filterResult, inputImagePaths.imagePath());
+                if(filterResult != null) {
+                    ConsoleUtils.saveResultImage(filterResult, inputImagePaths.imagePath());
+                } else {
+                    log.severe("filterResult is null");
+                }
             }
         }
     }
