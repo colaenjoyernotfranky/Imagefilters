@@ -11,9 +11,9 @@ import lombok.extern.java.Log;
 @Log
 public class Main {
     public static void main(String[] args) {
-        ImageFilter selectedImageFilter = null;
+        ImageFilter selectedImageFilter;
         BufferedImage filterResult;
-        boolean quit = false;
+        boolean quit;
         while(true) {
             char selection = ConsoleUtils.selectionMenu();
 
@@ -30,7 +30,7 @@ public class Main {
             if(selectedImageFilter != null) {
                 filterResult = selectedImageFilter.execute(inputImagePaths.imagePath(), inputImagePaths.maskPath());
                 if(filterResult != null) {
-                    ConsoleUtils.saveResultImage(filterResult, inputImagePaths.imagePath());
+                    ConsoleUtils.saveResultImage(filterResult, inputImagePaths.imagePath(), selectedImageFilter);
                 } else {
                     log.severe("filterResult is null");
                 }

@@ -7,12 +7,15 @@ import java.util.Scanner;
 import javax.imageio.ImageIO;
 
 import com.colaenjoyer.imagefilters.filters.Asciifilter;
+import com.colaenjoyer.imagefilters.filters.ImageFilter;
 import com.colaenjoyer.imagefilters.filters.Pixelsort;
 import lombok.extern.java.Log;
 
 @Log
 public class ConsoleUtils {
-    private final static Scanner in = new Scanner(System.in);
+    private ConsoleUtils() {}
+
+    private static final Scanner in = new Scanner(System.in);
     private static void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
@@ -23,9 +26,9 @@ public class ConsoleUtils {
         char selection = 0;
         while (!validSelection) {
             clearScreen();
-            String title = "-------------[imagefilters]-------------";
+            String title =    "-------------[imagefilters]-------------";
             String subtitle = "[a] ASCIIFILTER  [p] PIXELSORT  [q] Exit";
-            String footer = "----------------------------------------";
+            String footer =   "----------------------------------------";
 
             System.out.print(title + "\n" + subtitle + "\n" + footer + "\nSelection: ");
             selection = in.next().charAt(0);
@@ -38,11 +41,12 @@ public class ConsoleUtils {
 
     public static SelectionResult executeSelection(char selection) {
         clearScreen();
-        SelectionResult result = null;
+        SelectionResult result;
         switch (selection) {
-            case 'a' -> result =  new SelectionResult("-------------[ASCIIFILTER]-------------", false, new Asciifilter());
-            case 'p' -> result =   new SelectionResult("--------------[PIXELSORT]--------------", false, new Pixelsort());
-            case 'q' -> result =   new SelectionResult(null, true, null);
+            case 'a' -> result = new SelectionResult("-------------[ASCIIFILTER]-------------", false, new Asciifilter());
+            case 'p' -> result = new SelectionResult("--------------[PIXELSORT]--------------", false, new Pixelsort());
+            case 'q' -> result = new SelectionResult(null, true, null);
+            default -> result = new SelectionResult(null, false, null);
         }
         return result;
     }
@@ -66,7 +70,7 @@ public class ConsoleUtils {
         return new InputImagePaths(imagePath, maskPath);
     }
 
-    public static void saveResultImage(BufferedImage resultImage, String imagePath) {
+    public static void saveResultImage(BufferedImage resultImage, String imagePath, ImageFilter selectedImageFilter) {
         String outName = null;
         if(getOperatingSystem().toLowerCase().contains("windows")) {
             outName = imagePath.substring(imagePath.lastIndexOf("\\") + 1, imagePath.lastIndexOf("."));
@@ -75,7 +79,12 @@ public class ConsoleUtils {
             outName = imagePath.substring(imagePath.lastIndexOf("/") + 1, imagePath.lastIndexOf("."));
         }
         try {
-            ImageIO.write(resultImage, "png", new File("./filtered_" + outName + ".png"));
+            if(selectedImageFilter.getClass() == Asciifilter.class) {
+                ImageIO.write(resultImage, "png", new File("./ascii_" + outName + ".png"));
+            }
+            if(selectedImageFilter.getClass() == Pixelsort.class) {
+                ImageIO.write(resultImage, "png", new File("./sorted_" + outName + ".png"));
+            }
         } catch (Exception e) {
             log.severe(e.getMessage());
         }

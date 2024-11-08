@@ -14,8 +14,8 @@ import javax.imageio.ImageIO;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 
-@NoArgsConstructor
 @Log
+@NoArgsConstructor
 public class Asciifilter implements ImageFilter {
     private static final int FONT_SIZE = 8;
 
