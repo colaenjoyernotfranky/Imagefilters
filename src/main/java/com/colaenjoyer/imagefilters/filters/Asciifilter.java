@@ -11,46 +11,97 @@ import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
+import com.colaenjoyer.imagefilters.utils.ConsoleUtils;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class Asciifilter implements ImageFilter {
-    private int bufferedImageWidth;
-    private int bufferedImageHeight;
-    private int FONT_SIZE = 8;
+    private final int FONT_SIZE = 8;
 
     public BufferedImage execute(String pathname, String mask) {
         BufferedImage inputImage = getInputImage(pathname);
 
-        bufferedImageWidth = inputImage.getWidth();
-        bufferedImageHeight = inputImage.getHeight();
+        int bufferedImageWidth = inputImage.getWidth();
+        int bufferedImageHeight = inputImage.getHeight();
 
-        return textAsImage(toAscii(inputImage, -70));
+        BufferedImage imageMask;
+        boolean[][] maskArray = null;
+
+        if(mask != null) {
+            imageMask = scaleImage(getInputImage(mask), bufferedImageWidth * FONT_SIZE,
+                    bufferedImageHeight * FONT_SIZE);
+            maskArray = extractMask(imageMask);
+        }
+
+        BufferedImage scaledInputImage = scaleImage(inputImage, bufferedImageWidth * FONT_SIZE,
+                bufferedImageHeight * FONT_SIZE);
+        return applyMask(scaledInputImage, textAsImage(toAscii(inputImage, 0)), maskArray);
+    }
+
+    private BufferedImage scaleImage(BufferedImage originalScaleImage, int newWidth, int newHeight) {
+        BufferedImage scaledImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics2D graphics2D = scaledImage.createGraphics();
+        graphics2D.drawImage(originalScaleImage, 0, 0, newWidth, newHeight, null);
+        return scaledImage;
     }
 
     private BufferedImage textAsImage(String textString) {
         String[] textStringAsArray = textString.split("\n");
 
-        BufferedImage resultImage = new BufferedImage(bufferedImageWidth * FONT_SIZE, bufferedImageHeight * FONT_SIZE, BufferedImage.TYPE_INT_RGB);
+        BufferedImage resultImage = new BufferedImage(textStringAsArray[0].length() * FONT_SIZE,
+                textStringAsArray.length * FONT_SIZE, BufferedImage.TYPE_INT_RGB);
         
         Graphics2D resultImageGraphics = resultImage.createGraphics();
 
-        resultImageGraphics.setPaint(Color.WHITE);
-        resultImageGraphics.fillRect(0, 0, bufferedImageWidth * FONT_SIZE, bufferedImageHeight * FONT_SIZE);
+        resultImageGraphics.setPaint(Color.BLACK);
+        resultImageGraphics.fillRect(0, 0, resultImage.getWidth(), resultImage.getHeight());
 
-        resultImageGraphics.setColor(Color.BLACK);
+        resultImageGraphics.setColor(Color.WHITE);
 
         Map<TextAttribute, Object> fontAttributes = new HashMap<TextAttribute, Object>();
-        fontAttributes.put(TextAttribute.TRACKING, 0);
+        fontAttributes.put(TextAttribute.TRACKING, 1);
 
-        resultImageGraphics.setFont(new Font("Serif", Font.PLAIN, 4).deriveFont(fontAttributes));
+        resultImageGraphics.setFont(new Font("Serif", Font.PLAIN, FONT_SIZE).deriveFont(fontAttributes));
 
-        for(int y = 0; y < (bufferedImageHeight * FONT_SIZE); y++) {
-            resultImageGraphics.drawString(textStringAsArray[y/FONT_SIZE], 0, y+1);
+        for(int y = 0; y < resultImage.getHeight()/FONT_SIZE; y++) {
+            for (int x = 0; x < resultImage.getWidth()/FONT_SIZE; x++) {
+                resultImageGraphics.drawString("" + textStringAsArray[y].charAt(x), x * FONT_SIZE, y * FONT_SIZE);
+            }
         }
 
         resultImageGraphics.dispose();
         return resultImage;
+    }
+
+    private BufferedImage applyMask(BufferedImage image, BufferedImage filteredImage, boolean[][] mask) {
+        if(mask != null) {
+            for (int x = 0; x < filteredImage.getWidth(); x++) {
+                for (int y = 0; y < filteredImage.getHeight(); y++) {
+                    if(mask[x][y]) {
+                        filteredImage.setRGB(x, y, image.getRGB(x, y));
+                    }
+                    if(!mask[x][y]) {
+                        filteredImage.setRGB(x, y, filteredImage.getRGB(x, y));
+                    }
+                }
+            }
+        }
+        return filteredImage;
+    }
+
+    private boolean[][] extractMask(BufferedImage maskImg) {
+        boolean[][] mask = new boolean[maskImg.getWidth()][maskImg.getHeight()];
+
+        for (int y = 0; y < maskImg.getHeight(); y++) {
+            for (int x = 0; x < maskImg.getWidth(); x++) {
+                if(maskImg.getRGB(x, y) == Color.BLACK.getRGB()) {
+                    mask[x][y] =  false;
+                } else if(maskImg.getRGB(x, y) == Color.WHITE.getRGB()) {
+                    mask[x][y] =  true;
+                }
+            }
+        }
+        return mask;
     }
 
     private int getPixelBrightness(BufferedImage img, int x, int y) {
@@ -58,8 +109,7 @@ public class Asciifilter implements ImageFilter {
         int image_r = (p >> 16) & 0xff;
         int image_g = (p >> 8) & 0xff;
         int image_b = p & 0xff;
-        int pixel_brightness = (image_b + image_g + image_r) / 3;
-        return pixel_brightness;
+        return (image_b + image_g + image_r) / 3;
     }
 
     private BufferedImage getInputImage(String pathname) {
@@ -73,24 +123,24 @@ public class Asciifilter implements ImageFilter {
     }
 
     private String toAscii(BufferedImage img, int offset) {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (int i = 0; i < img.getHeight(); i++) {
             for (int j = 0; j < img.getWidth(); j++) {
                 int image_brightness = getPixelBrightness(img, j, i);
 
                 if (image_brightness <= 64 + offset) {
-                    s += "██";
+                    s.append(".");
                 } else if (64 + offset < image_brightness && image_brightness < 129 + offset) {
-                    s += "▓▓";
+                    s.append("-");
                 } else if (129 + offset < image_brightness && image_brightness < 193 + offset) {
-                    s += "▒▒";
+                    s.append("+");
                 } else {
-                    s += "░░";
+                    s.append("*");
                 }
             }
-            s += "\n";
+            s.append("\n");
         }
-        return s;
+        return s.toString();
     }
 }
 

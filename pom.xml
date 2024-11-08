@@ -8,7 +8,19 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-  <groupId>com.colaenjoyer.imagefilters</groupId>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>16</source>
+                    <target>16</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <groupId>com.colaenjoyer.imagefilters</groupId>
   <artifactId>imagefilters</artifactId>
-  <version>1</version>
+  <version>1.0.0</version>
 </project>

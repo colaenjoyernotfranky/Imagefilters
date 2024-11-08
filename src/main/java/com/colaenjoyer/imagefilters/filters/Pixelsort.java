@@ -10,15 +10,12 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
-import com.colaenjoyer.imagefilters.filters.Pixelsort;
-
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class Pixelsort implements ImageFilter {
     private int bufferedImageWidth;
     private int bufferedImageHeight;
-    private String progressString;
 
     private Random random = new Random();
 
@@ -133,13 +130,13 @@ public class Pixelsort implements ImageFilter {
         }
     }
 
-    private BufferedImage applyMask(Color[][] img, Color[][] sortedImgArray, boolean[][] mask) {
+    private BufferedImage applyMask(Color[][] imageArray, Color[][] sortedImageArray, boolean[][] mask) {
         BufferedImage sortedImage = new BufferedImage(bufferedImageWidth, bufferedImageHeight, BufferedImage.TYPE_INT_RGB);
 
         if(mask == null) {
             for (int x = 0; x < bufferedImageWidth; x++) {
                 for (int y = 0; y < bufferedImageHeight; y++) {
-                    sortedImage.setRGB(x, y, sortedImgArray[x][y].getRGB());
+                    sortedImage.setRGB(x, y, sortedImageArray[x][y].getRGB());
                 }
             }
             return sortedImage;
@@ -147,66 +144,14 @@ public class Pixelsort implements ImageFilter {
             for (int x = 0; x < bufferedImageWidth; x++) {
                 for (int y = 0; y < bufferedImageHeight; y++) {
                     if(mask[x][y]) {
-                        sortedImage.setRGB(x, y, img[x][y].getRGB());
+                        sortedImage.setRGB(x, y, imageArray[x][y].getRGB());
                     }
                     if(!mask[x][y]) {
-                        sortedImage.setRGB(x, y, sortedImgArray[x][y].getRGB());
+                        sortedImage.setRGB(x, y, sortedImageArray[x][y].getRGB());
                     }
                 }
             }
             return sortedImage;
-        }
-    }
-
-    private void updateProgressString(int percentage) {
-        String progressBar = "";
-
-        for(int i = 0; i < (percentage / 5); i++) {
-            progressBar += "=";
-        }
-
-        int emptySpaceLength = (20 - progressBar.length());
-
-        for(int i = 0; i < emptySpaceLength; i++) {
-            progressBar += " ";
-        }
-
-        if(progressString != null) {
-            String backspaceString = "";
-            for(int i = 0; i < progressString.length(); i++) {
-                backspaceString += "\b";
-            }
-            System.out.print(backspaceString);
-        }
-
-        progressString = "[" + progressBar + "] " + percentage + "%";
-
-        System.out.print(progressString);
-        if(percentage == 100) {
-            System.out.println();
-            System.out.println("DONE.");
-        }
-    }
-
-    public static void main(String args[]) {
-        Pixelsort pixelsort = new Pixelsort();
-
-        String imagePath = null;
-        String maskPath = null;
-
-        if(args.length > 1) {
-            imagePath = args[0];
-            maskPath = args[1];
-        } else if (args.length == 1) {
-            imagePath = args[0];
-        } else {
-            System.out.println("Usage: java PIXELSORT <image> [mask]");
-        }
-
-        try {
-            pixelsort.execute(imagePath, maskPath);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
     }
 }
