@@ -19,6 +19,7 @@ import lombok.extern.java.Log;
 @NoArgsConstructor
 public class Asciifilter implements ImageFilter {
     private static final int FONT_SIZE = FilterConfiguration.AsciiFilterConfiguration.getFontSize();
+    private static final String FONT = FilterConfiguration.AsciiFilterConfiguration.getFont();
     private static final int OFFSET = FilterConfiguration.AsciiFilterConfiguration.getBrightnessOffset();
     private static final Color BACKGROUND_COLOR = FilterConfiguration.AsciiFilterConfiguration.getBackgroundColor();
     private static final Color CHAR_COLOR = FilterConfiguration.AsciiFilterConfiguration.getCharColor();
@@ -66,7 +67,7 @@ public class Asciifilter implements ImageFilter {
         Map<TextAttribute, Object> fontAttributes = new HashMap<>();
         fontAttributes.put(TextAttribute.TRACKING, 1);
 
-        resultImageGraphics.setFont(new Font("Arial", Font.PLAIN, FONT_SIZE).deriveFont(fontAttributes));
+        resultImageGraphics.setFont(new Font(FONT, Font.PLAIN, FONT_SIZE).deriveFont(fontAttributes));
 
         for(int y = 0; y < resultImage.getHeight()/ FONT_SIZE; y++) {
             for (int x = 0; x < resultImage.getWidth()/ FONT_SIZE; x++) {

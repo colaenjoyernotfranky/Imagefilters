@@ -9,6 +9,7 @@ public final class FilterConfiguration {
 
     public static final class AsciiFilterConfiguration {
         private static final int FONT_SIZE = ConfigUtils.getEnvironmentVariable("FONT_SIZE", 8);
+        private static final String FONT = ConfigUtils.getEnvironmentVariable("FONT", "Serif");
         private static final int BRIGHTNESS_OFFSET = ConfigUtils.getEnvironmentVariable("BRIGHTNESS_OFFSET", 0);
         private static final Color BACKGROUND_COLOR = ConfigUtils.getEnvironmentVariable("BACKGROUND_COLOR", Color.BLACK);
         private static final Color CHAR_COLOR = ConfigUtils.getEnvironmentVariable("CHAR_COLOR", Color.WHITE);
@@ -17,6 +18,10 @@ public final class FilterConfiguration {
 
         public static int getFontSize() {
             return FONT_SIZE;
+        }
+
+        public static String getFont() {
+            return FONT;
         }
 
         public static int getBrightnessOffset() {
