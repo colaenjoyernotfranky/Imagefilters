@@ -15,10 +15,6 @@ public class UiUtils {
         return "-".repeat(Math.max(0, length));
     }
 
-    public static String generatePaddingForMenuBar(int length) {
-        return " ".repeat(Math.max(0, length));
-    }
-
     public static List<MenuItem> getSelectionMenuItems() {
         return Arrays.asList(MenuItem.builder()
                 .title("asciifilter")
@@ -61,13 +57,15 @@ public class UiUtils {
 
     public static List<MenuBar> getSelectionMenuBars() {
         return Arrays.asList(
-                getParagraphMenuBar("selectionParagraph", "Select a filter"),
+                getParagraphMenuBar("selectionParagraph", "Select a filter:"),
+                getParagraphMenuBar("asciiFilterInfo", "Asciifilter - Converts Image into Ascii art."),
+                getParagraphMenuBar("pixelSortInfo", "Pixelsort - Sorts image pixels by color."),
                 getEmptyMenuBar(),
                 getSelectionMenuBar("filterSelection", getSelectionMenuItems())
         );
     }
 
     public static Menu getSelectionMenu() {
-        return Menu.builder().title("imagefilters").menuBars(getSelectionMenuBars()).build();
+        return Menu.builder().title("imagefilters").width(48).height(25).menuBars(getSelectionMenuBars()).build();
     }
 }

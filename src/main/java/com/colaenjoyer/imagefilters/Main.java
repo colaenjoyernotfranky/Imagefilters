@@ -17,7 +17,6 @@ public class Main { //TODO: Update logic here to be less spaghetti with new menu
     public static void main(String[] args) {
         ImageFilter selectedImageFilter;
         BufferedImage filterResult;
-        boolean quit;
         while(true) {
             ConsoleUtils.clearScreen();
 
@@ -25,16 +24,14 @@ public class Main { //TODO: Update logic here to be less spaghetti with new menu
             menuRenderer.selectMenu("imagefilters");
 
             char selection = ConsoleUtils.selectionMenu();
-
             SelectionResult selectionResult = ConsoleUtils.executeSelection(selection);
-            quit = selectionResult.quit();
-            selectedImageFilter = selectionResult.imageFilter();
 
-            if(quit) {
+            if(selectionResult.quit()) {
                 break;
             }
 
             InputImagePaths inputImagePaths = ConsoleUtils.getImagePaths();
+            selectedImageFilter = selectionResult.imageFilter();
 
             if(selectedImageFilter != null) {
                 filterResult = selectedImageFilter.execute(inputImagePaths.imagePath(), inputImagePaths.maskPath());

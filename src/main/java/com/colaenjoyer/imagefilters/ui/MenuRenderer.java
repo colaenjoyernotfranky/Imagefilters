@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Builder
@@ -18,14 +16,6 @@ import java.util.List;
 public class MenuRenderer {
     private List<Menu> menus;
     private Menu selectedMenu;
-
-    public MenuRenderer() {
-        menus = new ArrayList<>();
-    }
-
-    public MenuRenderer(List<Menu> menus) {
-        this.menus = menus;
-    }
 
     public void selectMenu(String title) {
         List<Menu> menusWithTitle = findMenusByTitle(title);
@@ -38,20 +28,12 @@ public class MenuRenderer {
     }
 
     private void draw() {
-        String[] menuBars = selectedMenu.generateMenuBars();
+        List<String> menuBars = selectedMenu.generateMenuBars();
         System.out.println(selectedMenu.getHeader());
         for (String menuBar : menuBars) {
             System.out.println(menuBar);
         }
         System.out.print(selectedMenu.getFooter());
-    }
-
-    public void addMenus(Menu... menus) {
-        this.menus.addAll(Arrays.asList(menus));
-    }
-
-    public void removeMenus(Menu... menus) {
-            this.menus.removeAll(Arrays.asList(menus));
     }
 
     public List<Menu> findMenusByTitle(String title) {
