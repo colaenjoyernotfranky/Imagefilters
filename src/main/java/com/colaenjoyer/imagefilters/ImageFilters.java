@@ -3,6 +3,7 @@ package com.colaenjoyer.imagefilters;
 import java.util.Collections;
 import com.colaenjoyer.imagefilters.ui.MenuRenderer;
 import com.colaenjoyer.imagefilters.utils.ConsoleUtils;
+import com.colaenjoyer.imagefilters.utils.ImageFiltersOperations;
 import lombok.extern.java.Log;
 
 import static com.colaenjoyer.imagefilters.ui.Fixture.getSelectionMenu;
@@ -17,7 +18,7 @@ public class ImageFilters {
                     .menus(Collections.singletonList(getSelectionMenu())).build();
             menuRenderer.selectMenu("imagefilters");
 
-            char selection = ConsoleUtils.selectionMenu();
+            char selection = ImageFiltersOperations.selectionMenu();
 
             if(selection == 'q') {
                 break;

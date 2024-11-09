@@ -1,7 +1,7 @@
 package com.colaenjoyer.imagefilters.ui;
 
 
-import com.colaenjoyer.imagefilters.utils.ConsoleUtils;
+import com.colaenjoyer.imagefilters.utils.ImageFiltersOperations;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,15 +16,15 @@ public class Fixture {
         return Arrays.asList(MenuItem.builder()
                 .title("asciifilter")
                 .selectionChar('a')
-                .function(getCommandExecution(ConsoleUtils::executeSelection, 'a'))
+                .function(getCommandExecution(ImageFiltersOperations::executeSelection, 'a'))
                 .build(), MenuItem.builder()
                 .title("pixelsort")
                 .selectionChar('p')
-                .function(getCommandExecution(ConsoleUtils::executeSelection, 'p'))
+                .function(getCommandExecution(ImageFiltersOperations::executeSelection, 'p'))
                 .build(), MenuItem.builder()
                 .title("quit")
                 .selectionChar('q')
-                .function(getCommandExecution(ConsoleUtils::executeSelection, 'q'))
+                .function(getCommandExecution(ImageFiltersOperations::executeSelection, 'q'))
                 .build());
     }
 
