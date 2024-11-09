@@ -15,6 +15,10 @@ public class UiUtils {
         return "-".repeat(Math.max(0, length));
     }
 
+    public static String generatePaddingForMenuBar(int length) {
+        return " ".repeat(Math.max(0, length));
+    }
+
     public static List<MenuItem> getSelectionMenuItems() {
         return Arrays.asList(MenuItem.builder()
                 .title("asciifilter")
@@ -23,14 +27,44 @@ public class UiUtils {
                 .title("pixelsort")
                 .selectionChar('p').build(), MenuItem.builder()
                 .title("quit")
-                .selectionChar('q').build());
+                .selectionChar('q')
+                .build());
+    }
+
+    public static MenuBar getSelectionMenuBar(String title, MenuItem... items) {
+        return MenuBar.builder()
+                .title(title)
+                .menuItems(Arrays.asList(items))
+                .build();
+    }
+
+    public static MenuBar getSelectionMenuBar(String title, List<MenuItem> items) {
+        return MenuBar.builder()
+                .title(title)
+                .menuItems(items)
+                .build();
+    }
+
+    public static MenuBar getParagraphMenuBar(String title, String paragraph) {
+        return MenuBar.builder()
+                .title(title)
+                .menuItems(Collections.singletonList(MenuItem.builder().title(paragraph).build()))
+                .build();
+    }
+
+    public static MenuBar getEmptyMenuBar() {
+        return MenuBar.builder()
+                .title("emptyBar")
+                .menuItems(Collections.singletonList(MenuItem.builder().title("").build()))
+                .build();
     }
 
     public static List<MenuBar> getSelectionMenuBars() {
-        return Collections.singletonList(MenuBar.builder()
-                .title("filterSelection")
-                .menuItems(getSelectionMenuItems())
-                .build());
+        return Arrays.asList(
+                getParagraphMenuBar("selectionParagraph", "Select a filter"),
+                getEmptyMenuBar(),
+                getSelectionMenuBar("filterSelection", getSelectionMenuItems())
+        );
     }
 
     public static Menu getSelectionMenu() {

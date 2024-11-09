@@ -1,9 +1,6 @@
 package com.colaenjoyer.imagefilters.ui;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +9,7 @@ import static com.colaenjoyer.imagefilters.utils.UiUtils.generateLineSeparators;
 
 @Getter
 @Builder
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Menu {
@@ -21,26 +19,27 @@ public class Menu {
     private String footer;
 
     public String[] generateMenuBars() {
-        generateHeaderAndFooter();
+        int longestMenuBarLength = generateHeaderAndFooter();
         String[] menuBarsArray = new String[menuBars.size()];
         for (int i = 0; i < menuBars.size(); i++) {
-            menuBarsArray[i] = menuBars.get(i).generateBar();
+            menuBarsArray[i] = menuBars.get(i).generateBar(longestMenuBarLength);
         }
         return menuBarsArray;
     }
 
-    private void generateHeaderAndFooter() {
+    private int generateHeaderAndFooter() {
         int totalLength = getLongestMenuBarLength();
-        header = "+" + generateLineSeparators(((totalLength - title.length() - 4) / 2))
+        header = "+" + generateLineSeparators(((totalLength - title.length() - 2) / 2))
                + "[" + title + "]" +
-                generateLineSeparators(((totalLength - title.length() - 4) / 2)) + "+";
-        footer = "+" + generateLineSeparators(totalLength - 2) + "+";
+                generateLineSeparators(((totalLength - title.length() - 2) / 2)) + "+";
+        footer = "+" + generateLineSeparators(totalLength) + "+";
+        return totalLength;
     }
 
     private int getLongestMenuBarLength() {
         int longestMenuBarLength = 0;
         for (MenuBar menuBar : menuBars) {
-            int menuBarLength = menuBar.generateBar().length();
+            int menuBarLength = menuBar.getMenuBarLength();
             if(menuBarLength > longestMenuBarLength) {
                 longestMenuBarLength = menuBarLength;
             }

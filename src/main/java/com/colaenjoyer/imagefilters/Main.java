@@ -13,7 +13,7 @@ import lombok.extern.java.Log;
 import static com.colaenjoyer.imagefilters.utils.UiUtils.*;
 
 @Log
-public class Main {
+public class Main { //TODO: Update logic here to be less spaghetti with new menu system
     public static void main(String[] args) {
         ImageFilter selectedImageFilter;
         BufferedImage filterResult;

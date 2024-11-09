@@ -20,6 +20,8 @@ import lombok.extern.java.Log;
 public class Asciifilter implements ImageFilter {
     private static final int FONT_SIZE = FilterConfiguration.AsciiFilterConfiguration.getFontSize();
     private static final int OFFSET = FilterConfiguration.AsciiFilterConfiguration.getBrightnessOffset();
+    private static final Color BACKGROUND_COLOR = FilterConfiguration.AsciiFilterConfiguration.getBackgroundColor();
+    private static final Color CHAR_COLOR = FilterConfiguration.AsciiFilterConfiguration.getCharColor();
 
     public BufferedImage execute(String pathname, String mask) {
         BufferedImage inputImage = getInputImage(pathname);
@@ -56,10 +58,10 @@ public class Asciifilter implements ImageFilter {
         
         Graphics2D resultImageGraphics = resultImage.createGraphics();
 
-        resultImageGraphics.setPaint(Color.BLACK);
+        resultImageGraphics.setPaint(BACKGROUND_COLOR);
         resultImageGraphics.fillRect(0, 0, resultImage.getWidth(), resultImage.getHeight());
 
-        resultImageGraphics.setColor(Color.WHITE);
+        resultImageGraphics.setColor(CHAR_COLOR);
 
         Map<TextAttribute, Object> fontAttributes = new HashMap<>();
         fontAttributes.put(TextAttribute.TRACKING, 1);
