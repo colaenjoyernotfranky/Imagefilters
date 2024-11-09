@@ -33,14 +33,14 @@ public class MenuRenderer {
             List<MenuItem> menuItems = menuBar.getMenuItems();
             menuItems = menuItems.stream().filter(menuItem -> menuItem.selectionChar() == selection).toList();
             if(!menuItems.isEmpty()) {
-                menuItems.get(0).function().execute();
+                menuItems.getFirst().function().execute();
             }
         });
     }
 
     private void draw() {
         List<String> menuBars = selectedMenu.generateMenuBars();
-        System.out.println(selectedMenu.getHeader());
+        System.out.println("\n" + selectedMenu.getHeader());
         for (String menuBar : menuBars) {
             System.out.println(menuBar);
         }
