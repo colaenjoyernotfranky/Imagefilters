@@ -39,14 +39,20 @@
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <mainClass>com.colaenjoyer.imagefilters.ImageFilters</mainClass>
-                        </manifest>
-                    </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-jar-plugin</artifactId>
+                  <version>3.4.1</version>
+                  <configuration>
+                      <archive>
+                          <manifest>
+                              <mainClass>com.colaenjoyer.imagefilters.ImageFilters</mainClass>
+                          </manifest>
+                      </archive>
+                  </configuration>
+              </plugin>
         </plugins>
     </build>
 
