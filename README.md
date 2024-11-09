@@ -58,7 +58,7 @@ mvn clean install
 
 4. Run the Application using:
 ```
-java -jar imagefilters-1.0.0.jar
+java -jar target/imagefilters-1.0.0.jar
 ```
 
 ## Contributing
