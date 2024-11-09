@@ -3,7 +3,8 @@ package com.colaenjoyer.imagefilters.configuration;
 import com.colaenjoyer.imagefilters.utils.ConfigUtils;
 
 public final class AppConfiguration {
-    private static final String OUTPUT_PATH = ConfigUtils.getEnvironmentVariable("OUTPUT_PATH", System.getProperty("user.dir"));
+    private static final String OUTPUT_PATH = ConfigUtils.getEnvironmentVariable("OUTPUT_PATH",
+            System.getProperty("user.dir"));
 
     private AppConfiguration() {}
 

@@ -56,7 +56,6 @@ public class Pixelsort implements ImageFilter {
 
     private BufferedImage getInputImage(String pathname) {
         BufferedImage bufferedImage = null;
-
         try {
             bufferedImage = ImageIO.read(new File(pathname));
         } catch (IOException e) {

@@ -27,6 +27,17 @@ public class MenuRenderer {
         draw();
     }
 
+    public void execute(char selection) {
+        List<MenuBar> menuBars = selectedMenu.getMenuBars();
+        menuBars.forEach(menuBar -> {
+            List<MenuItem> menuItems = menuBar.getMenuItems();
+            menuItems = menuItems.stream().filter(menuItem -> menuItem.selectionChar() == selection).toList();
+            if(!menuItems.isEmpty()) {
+                menuItems.get(0).function().execute();
+            }
+        });
+    }
+
     private void draw() {
         List<String> menuBars = selectedMenu.generateMenuBars();
         System.out.println(selectedMenu.getHeader());

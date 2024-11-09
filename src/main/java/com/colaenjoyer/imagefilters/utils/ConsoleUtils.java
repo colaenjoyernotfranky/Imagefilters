@@ -23,12 +23,6 @@ public class ConsoleUtils {
         System.out.flush();
     }
 
-    private static void removeChars(int amount) {
-        for(int i = 0; i <= amount; i++) {
-            System.out.print("\b");
-        }
-    }
-
     public static char selectionMenu() {
         boolean validSelection = false;
         char selection = 0;
@@ -42,15 +36,20 @@ public class ConsoleUtils {
         return selection;
     }
 
-    public static SelectionResult executeSelection(char selection) {
-        SelectionResult result;
+    public static void executeSelection(char selection) {
+        ImageFilter selectedImageFilter = null;
         switch (selection) {
-            case 'a' -> result = new SelectionResult(false, new Asciifilter());
-            case 'p' -> result = new SelectionResult(false, new Pixelsort());
-            case 'q' -> result = new SelectionResult(true, null);
-            default -> result = new SelectionResult(false, null);
+            case 'a': selectedImageFilter = new Asciifilter(); break;
+            case 'p': selectedImageFilter = new Pixelsort(); break;
+            default: case 'q': System.exit(0); break;
         }
-        return result;
+        InputImagePaths inputImagePaths = ConsoleUtils.getImagePaths();
+        BufferedImage filterResult = selectedImageFilter.execute(inputImagePaths.imagePath(), inputImagePaths.maskPath());
+        if(filterResult != null) {
+            ConsoleUtils.saveResultImage(filterResult, inputImagePaths.imagePath(), selectedImageFilter);
+        } else {
+            log.severe("filterResult is null. Check your image paths.");
+        }
     }
 
     public static InputImagePaths getImagePaths() {
@@ -67,24 +66,14 @@ public class ConsoleUtils {
     }
 
     public static void saveResultImage(BufferedImage resultImage, String imagePath, ImageFilter selectedImageFilter) {
-        String outName = null;
-        if(getOperatingSystem().toLowerCase().contains("windows")) {
-            outName = AppConfiguration.getOutputPath() + "\\" + imagePath.substring(imagePath.lastIndexOf("\\") + 1, imagePath.lastIndexOf("."));
-        }
-        if(getOperatingSystem().toLowerCase().contains("linux")) {
-            outName = AppConfiguration.getOutputPath() + "/" + imagePath.substring(imagePath.lastIndexOf("/") + 1, imagePath.lastIndexOf("."));
-        }
+        String separator = getOperatingSystem().toLowerCase().contains("windows") ? "\\" : "/";
+        String outName = AppConfiguration.getOutputPath() + separator + imagePath.substring(
+                (imagePath.lastIndexOf(separator) + 1), imagePath.lastIndexOf("."));
         try {
-            if(selectedImageFilter.getClass() == Asciifilter.class) {
-                ImageIO.write(resultImage, "png", new File(outName + "_ascii.png"));
-                clearScreen();
-                log.info("Saved ascii image to " + outName + "_ascii.png");
-            }
-            if(selectedImageFilter.getClass() == Pixelsort.class) {
-                ImageIO.write(resultImage, "png", new File(outName + "_sorted.png"));
-                clearScreen();
-                log.info("Saved sorted image to " + outName + "_sorted.png");
-            }
+            clearScreen();
+            outName += selectedImageFilter.getClass() == Asciifilter.class ? "_ascii.png" : "_sorted.png";
+            ImageIO.write(resultImage, "png", new File(outName));
+            log.info("Saved image to " + outName);
             TimeUnit.SECONDS.sleep(1);
         } catch (Exception e) {
             log.severe(e.getMessage());

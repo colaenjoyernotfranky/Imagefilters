@@ -7,6 +7,7 @@ import java.util.List;
 
 import static com.colaenjoyer.imagefilters.utils.UiUtils.generateLineSeparators;
 
+
 @Getter
 @Builder
 @Setter
