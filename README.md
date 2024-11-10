@@ -6,15 +6,15 @@ ImageFilters is a Java 21 project for applying image filters to images using a c
 
 **Asciifilter**: Converts an image into ASCII art.
 
-![Asciifilter example](example_ascii_nomask.png)
+<img src="example_ascii_nomask.png" style="width: 50%;" />
 
 **Pixelsort**: Sorts the pixels of an image in every row by color and shifts the sorted pixels by a random amount.
 
-![Pixelsort example](example_sorted_nomask.png)
+<img src="example_sorted_nomask.png" style="width: 50%;" />
 
 **Mask Support**: You can use a mask image to selectively apply filters. The mask should consist out of black (apply filter) and white (ignore filter) pixels.
 
-![Asciifilter with masking example](example_ascii_withmask.png) ![Pixelsort with masking example](example_sorted_withmask.png)
+<img src="example_ascii_withmask.png" style="width: 32%;" /> <img src="example_mask.jpg" style="width: 32%;" /> <img src="example_sorted_withmask.png" style="width: 32%;" />
 
 ## Usage
 
