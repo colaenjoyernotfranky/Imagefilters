@@ -16,6 +16,8 @@ ImageFilters is a Java 21 project for applying image filters to images using a c
 
 <img src="example_ascii_withmask.png" style="width: 32%;" /> <img src="example_mask.jpg" style="width: 32%;" /> <img src="example_sorted_withmask.png" style="width: 32%;" />
 
+<sub> Example image source: https://github.com/yavuzceliker/sample-images/blob/main/images/image-1.jpg </sub>
+
 ## Usage
 
 **Select a Filter**: Upon running the program, you'll be prompted to choose between the available filters: ASCII or Pixel Sort.
